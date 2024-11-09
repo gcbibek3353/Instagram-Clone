@@ -1,0 +1,15 @@
+import { Router } from "express";
+import upload from "../middlewares/multer.js";
+import { isUserAuthenticated } from "../middlewares/isUserAuthenticated.js";
+import { addComment, addPost, bookMarkPost, deletePost, disLikePost, getAllPost, getCommentsOfPost, getUserPost, likePost } from "../controllers/post.controller.js";
+const router = Router();
+router.post('/addpost', isUserAuthenticated, upload.array('images', 10), addPost);
+router.get('/getallposts', isUserAuthenticated, getAllPost);
+router.get('/getUserPost/:id', getUserPost);
+router.post('/likePost/:id', isUserAuthenticated, likePost);
+router.post('/dislikePost/:id', isUserAuthenticated, disLikePost);
+router.post('/comment/:id', isUserAuthenticated, addComment);
+router.get('/getcomment/:id', isUserAuthenticated, getCommentsOfPost);
+router.delete('/:id', isUserAuthenticated, deletePost);
+router.put('/bookmark/:id', isUserAuthenticated, bookMarkPost);
+export default router;
