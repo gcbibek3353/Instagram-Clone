@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Link, Outlet, useParams } from 'react-router-dom';
-import { Heart, MessageCircle} from 'lucide-react';
+import { Heart, MessageCircle, UserRound} from 'lucide-react';
 import SideBar from './sideBar';
 import { useRecoilValue } from 'recoil';
 import { userAtom } from '@/recoil/user';
@@ -89,11 +89,17 @@ const profile = () => {
         {profile?.user?.userName ? (
           <div className="flex flex-col items-center md:items-start">
             <div className="flex flex-col items-center gap-4 md:flex-row md:gap-6">
-              <img
+              {
+                profile.user.profilePic_Url 
+                ? <img
                 src={profile.user.profilePic_Url}
                 alt="Profile_Pic"
                 className="rounded-full w-24 h-24 shadow-md"
               />
+              : <UserRound className='"rounded-full w-24 h-24 shadow-md"' />
+
+              }
+             
               <div className="flex flex-col items-center md:items-start gap-2">
                 <div className="flex items-center gap-2">
                   <span className="font-semibold text-lg">{profile.user.userName}</span>

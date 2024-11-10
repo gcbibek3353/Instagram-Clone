@@ -258,7 +258,7 @@ export const followORUnfollow = async (req: CustomRequest, res: Response): Promi
                 UserModel.updateOne({ _id: userId }, { $push: { following: idToFollow } }),
                 UserModel.updateOne({ _id: idToFollow }, { $push: { followers: userId } }),
             ])
-            return res.status(200).json({ message: 'followed successfully', success: true });
+            return res.status(200).json({ message: 'followed successfully', success: true, action : 'follow' });
         }
         else{
             // logic to unfollow
@@ -266,7 +266,7 @@ export const followORUnfollow = async (req: CustomRequest, res: Response): Promi
                 UserModel.updateOne({ _id: userId }, { $pull: { following: idToFollow } }),
                 UserModel.updateOne({ _id: idToFollow }, { $pull: { followers: userId } }),
             ])
-            return res.status(200).json({ message: 'UnFollowed successfully', success: true });
+            return res.status(200).json({ message: 'UnFollowed successfully', success: true, action : 'unfollow' });
         }
     } catch (error: any) {
         console.log(error.message);

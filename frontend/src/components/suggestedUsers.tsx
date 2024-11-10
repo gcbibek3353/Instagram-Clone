@@ -2,8 +2,10 @@ import axios from 'axios';
 import { UserRound } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { toast } from 'sonner';
 
 const SuggestedUsers = ({ userId }: { userId: string }) => {
+  const [isfollowing,setIsFollowing] = useState(true);
   const [suggestedUsers, setSuggestedUsers] = useState([]);
 
   useEffect(() => {
@@ -22,6 +24,26 @@ const SuggestedUsers = ({ userId }: { userId: string }) => {
     };
     fetchAllSuggestedUsers();
   }, []);
+
+  const followHandler = async(userTofollow : string)=>{
+    try {
+      const res = await axios.post(`http://localhost:3000/api/v1/user/followorunfollow/${userTofollow}`,{},{
+        withCredentials : true
+      });
+      if(res.data.action == 'follow'){
+        setIsFollowing(true);
+        toast.success('followed successfully')
+      }
+      else if(res.data.action == 'unfollow'){
+        toast.success('unfollowed successfully')
+        setIsFollowing(false);
+      }
+      console.log(res);
+      
+    } catch (error : any) {
+      console.log(error.message);
+    }
+  }
 
   return (
     <div className="w-full p-4 bg-white rounded-lg shadow-md">
@@ -44,7 +66,7 @@ const SuggestedUsers = ({ userId }: { userId: string }) => {
           <p className="text-xs text-gray-500">{suggestedUser.bio ? suggestedUser.bio : 'bio here...'}</p>
         </div>
       </Link>
-      <button className="text-blue-500 text-xs font-semibold hover:text-blue-600">Follow</button>
+      <button onClick={()=>followHandler(suggestedUser._id)} className="text-blue-500 text-xs font-semibold hover:text-blue-600">{isfollowing ? 'Unfollow' : 'follow'}</button>
     </div>
   ))}
 </div>
