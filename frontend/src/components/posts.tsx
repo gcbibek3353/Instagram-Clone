@@ -114,6 +114,7 @@ const Post = ({ post }: { post: any }) => {
     const addBookmarkHandler = async()=>{
         try {
             const res = await axios.put(`http://localhost:3000/api/v1/post/bookmark/${post._id}`,{},{withCredentials : true});
+            console.log(res);
             if(!res.data.success){
                 console.log(res);
                 console.log(`unable to Save Post`);
