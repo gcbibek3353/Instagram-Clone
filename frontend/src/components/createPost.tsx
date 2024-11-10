@@ -10,7 +10,7 @@ const createPost = () => {
   const navigate = useNavigate();
   const [caption, setCaption] = useState('');
 
-  const uploadHandler = async (e: any) => {
+  const postCreateHandler = async (e: any) => {
     e.preventDefault();
     try {
       
@@ -40,9 +40,9 @@ const createPost = () => {
   return (
     <div>
       <div>
-        <h2> Login </h2>
+        <h2> Create Post  </h2>
       </div>
-      <form onSubmit={uploadHandler}>
+      {/* <form onSubmit={postCreateHandler}>
         <Input
           type="email"
           name="email"
@@ -61,9 +61,11 @@ const createPost = () => {
         />
         <Button type='submit'>Login</Button>
         <span className='text-center'>Do not have an account? <Link to="/signup" className='text-blue-600'>Sign Up</Link></span>
-      </form>
+      </form> */}
     </div>
   )
 }
+
+
 
 export default createPost

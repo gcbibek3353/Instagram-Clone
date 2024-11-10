@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { UserRound } from 'lucide-react';
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 
@@ -25,7 +26,12 @@ const userInfo = ({ userId }: { userId: string }) => {
     <div>
       {profile?.user?.userName ? (
         <Link to={`/profile/${userId}`}  className='flex gap-2'>
-          <img src={profile.user.profilePic_Url} alt={"user_Pic"} className='w-10 h-10 rounded-full' />
+          {
+            profile.user.profilePic_Url ?
+             <img src={profile.user.profilePic_Url} alt={"user_Pic"} className='w-10 h-10 rounded-full' />
+             :  <UserRound className='bg-slate-300 mr-2 p-2 rounded-full text-lg w-10 h-10' />
+          }
+          
           <div>
             <p>{profile.user.userName}</p>
             <p>{profile.user.bio}</p>

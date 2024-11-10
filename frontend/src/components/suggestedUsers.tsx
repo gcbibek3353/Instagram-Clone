@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { UserRound } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -32,9 +33,12 @@ const SuggestedUsers = ({ userId }: { userId: string }) => {
   {suggestedUsers.map((suggestedUser: any, index: any) => (
     <div key={index} className="flex items-start justify-between mr-3">
       <Link to={`/profile/${suggestedUser._id}`} className="flex items-start space-x-3">
-        <span className="flex items-center justify-center w-10 h-10 bg-gray-200 text-gray-700 rounded-full">
-          {suggestedUser.userName.toUpperCase().charAt(0)}
-        </span>
+        {
+          suggestedUser.profilePic_Url 
+          ? ( <img src={suggestedUser.profilePic_Url} alt={`${suggestedUser.profilePic_Url}'s profile`} className="h-10 w-10 rounded-full mr-3" />) 
+          : <UserRound className='bg-slate-300 mr-2 p-2 rounded-full text-lg w-10 h-10' />
+
+        }
         <div className="flex flex-col">
           <span className="text-sm font-medium text-gray-800">{suggestedUser.userName}</span>
           <p className="text-xs text-gray-500">{suggestedUser.bio ? suggestedUser.bio : 'bio here...'}</p>

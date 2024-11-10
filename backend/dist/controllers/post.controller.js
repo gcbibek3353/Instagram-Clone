@@ -257,13 +257,13 @@ export const bookMarkPost = async (req, res) => {
             //logic to unbookmark
             await user.updateOne({ $pull: { bookmarks: post._id } });
             await user.save();
-            return res.status(201).json({ type: 'unsaved', message: 'Post removed from bookmark', success: true });
+            return res.status(201).json({ type: 'unsaved', message: 'Post removed from bookmark', success: true, action: 'unbookmark' });
         }
         else {
             //logic to bookmark
             await user.updateOne({ $addToSet: { bookmarks: post._id } });
             await user.save();
-            return res.status(201).json({ type: 'saved', message: 'Post bookmarked', success: true });
+            return res.status(201).json({ type: 'saved', message: 'Post bookmarked', success: true, action: 'bookmark' });
         }
     }
     catch (error) {

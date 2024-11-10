@@ -1,18 +1,19 @@
 import { userAtom } from '@/recoil/user';
 import axios from 'axios';
-import { Heart, Home, LogOut, MessageCircle, PlusSquare, Search, TrendingUp, User } from 'lucide-react';
+import { Heart, Home, LogOut, MessageCircle, PlusSquare, Search, TrendingUp, UserRound} from 'lucide-react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { toast } from 'sonner';
 
 const SideBar = ({ userId }: { userId: string }) => {
-    const user = useRecoilValue(userAtom);
+    const [user,setUser] = useRecoilState(userAtom);
     const navigate = useNavigate();
 
     const logOutHandler = async ()=>{
         try {
             const res = await axios.get('http://localhost:3000/api/v1/user/logout', { withCredentials: true });
             if(res.data.success){
+                setUser({});
                 navigate('/signin');
                 toast.success("logged Out successfully")
             }
@@ -70,7 +71,12 @@ const SideBar = ({ userId }: { userId: string }) => {
                 <li>
                     <NavLink to={`/profile/${userId}`} className={navLinkStyles}>
                         {/* <User className="mr-2" /> */}
-                        <img src={user?.profilePic_Url} alt='profilePic' className='h-10 w-10 rounded-full' />
+                        {
+                            user.profilePic_Url ? 
+                            <img src={user?.profilePic_Url} alt='profilePic' className='h-10 w-10 rounded-full' />
+                            : <UserRound className='bg-slate-300 mr-2 p-2 rounded-full text-lg w-10 h-10' />
+                        }
+                       
                         <span>Profile</span>
                     </NavLink>
                 </li>

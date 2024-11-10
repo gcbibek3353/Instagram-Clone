@@ -30,7 +30,7 @@ const signIn = () => {
       if (res.data.success) {
         setEmail('')
         setPassword('')
-        // console.log(res.data);
+        console.log(res.data);
         setUser(res.data.user);
     
         navigate("/");
