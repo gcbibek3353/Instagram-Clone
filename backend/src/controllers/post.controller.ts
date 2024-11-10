@@ -115,62 +115,62 @@ export const getUserPost = async (req: CustomRequest, res: Response) => {
     }
 }
 
-export const likePost = async (req: CustomRequest, res: Response) => {
-    // This is a bad method because single user can like same post multiple times
-    try {
-        const userId = req.id;
-        const postId = req.params.id;
-        const post = await PostModel.findById(postId);
-        if (!post) return res.status(401).json({
-            message: "The post you are trying to like doesn't exists",
-            success: false
-        })
-        await post.updateOne({ $addToSet: { likes: userId } });
-        await post.save();
-        // implement socket.io for real-time notification
+// export const likePost = async (req: CustomRequest, res: Response) => {
+//     // This is a bad method because single user can like same post multiple times
+//     try {
+//         const userId = req.id;
+//         const postId = req.params.id;
+//         const post = await PostModel.findById(postId);
+//         if (!post) return res.status(401).json({
+//             message: "The post you are trying to like doesn't exists",
+//             success: false
+//         })
+//         await post.updateOne({ $addToSet: { likes: userId } });
+//         await post.save();
+//         // implement socket.io for real-time notification
 
-        return res.status(201).json({
-            message : "Post liked successfully",
-            success : true,
-        })
+//         return res.status(201).json({
+//             message : "Post liked successfully",
+//             success : true,
+//         })
 
-    } catch (error: any) {
-        console.log(error.message);
-        return res.status(401).json({
-            message: "Unable to Like the post",
-            error: error.message,
-            success: false
-        })
-    }
-}
+//     } catch (error: any) {
+//         console.log(error.message);
+//         return res.status(401).json({
+//             message: "Unable to Like the post",
+//             error: error.message,
+//             success: false
+//         })
+//     }
+// }
 
-export const disLikePost = async (req: CustomRequest, res: Response) => {
-    //  Bad approach because any person can dislike any post even if s/he hadn't liked it
-    try {
-        const userId = req.id;
-        const postId = req.params.id;
-        const post = await PostModel.findById(postId);
-        if (!post) return res.status(401).json({
-            message: "The post you are trying to like doesn't exists",
-            success: false
-        })
-        await post.updateOne({ $pull: { likes: userId } });
-        await post.save();
-        // implement socket.io for real-time notification
+// export const disLikePost = async (req: CustomRequest, res: Response) => {
+//     //  Bad approach because any person can dislike any post even if s/he hadn't liked it
+//     try {
+//         const userId = req.id;
+//         const postId = req.params.id;
+//         const post = await PostModel.findById(postId);
+//         if (!post) return res.status(401).json({
+//             message: "The post you are trying to like doesn't exists",
+//             success: false
+//         })
+//         await post.updateOne({ $pull: { likes: userId } });
+//         await post.save();
+//         // implement socket.io for real-time notification
 
-        return res.status(201).json({
-            message : "Post disLiked successfully",
-            success : true,
-        })
-    } catch (error: any) {
-        console.log(error.message);
-        return res.status(401).json({
-            message: "Unable to Like the post",
-            error: error.message,
-            success: false
-        })
-    }
-}
+//         return res.status(201).json({
+//             message : "Post disLiked successfully",
+//             success : true,
+//         })
+//     } catch (error: any) {
+//         console.log(error.message);
+//         return res.status(401).json({
+//             message: "Unable to Like the post",
+//             error: error.message,
+//             success: false
+//         })
+//     }
+// }
 
 export const addComment = async (req: CustomRequest, res: Response) => {
     try {
@@ -271,7 +271,7 @@ export const bookMarkPost = async (req: CustomRequest, res: Response) => {
         const postId = req.params.id;
 
         const post = await PostModel.findById(postId);
-        if(!post) return res.status(404).json({message:'Post which you want to bookmark doesnt exists', success:false});
+        if(!post) return res.status(404).json({message:'Post which you want to bookmark/Unbookmark doesnt exists', success:false});
 
         const user = await UserModel.findById(userId);
         if(!user) return;
@@ -290,6 +290,44 @@ export const bookMarkPost = async (req: CustomRequest, res: Response) => {
         }
 
     } catch (error: any) {
+        console.log(error.message);
+        return res.status(401).json({
+            message: "Unable to bookmark the Posts",
+            error: error.message,
+            success: false
+        })
+    }
+}
+
+export const likePost = async (req : CustomRequest , res : Response) =>{
+    try {
+        const userId = req.id as any;
+        const postId = req.params.id;
+
+        const post = await PostModel.findById(postId);
+        if(!post) return res.status(404).json({message:'Post which you want to Like/disLike doesnt exists', success:false});
+
+        const user = await UserModel.findById(userId);
+        if(!user) return;
+
+        console.log(post);
+        console.log(user);
+
+        // userId is string typed as any but includes need (objectID)
+        if(post?.likes.includes(userId)){
+            // logic to dislike
+            await post.updateOne({$pull:{likes:user._id}});
+            await post.save();
+            return res.status(201).json({ message:'Post Disliked', success:true , action : 'dislike'});
+        }
+        else {
+            // logic to like 
+            await post.updateOne({$addToSet:{likes:user._id}});
+            await post.save();
+            return res.status(201).json({ message:'Post Liked', success:true , action : 'like'});
+        }
+
+    } catch (error : any) {
         console.log(error.message);
         return res.status(401).json({
             message: "Unable to bookmark the Posts",

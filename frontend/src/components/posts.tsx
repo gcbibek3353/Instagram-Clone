@@ -24,25 +24,31 @@ const Posts = () => {
     }, []);
 
     return (
-        <div className="p-4">
-            <h1 className="text-2xl font-bold mb-4">Posts</h1>
+        <div className="p-6 bg-gray-50 min-h-screen">
+            <h1 className="text-3xl font-extrabold text-gray-800 mb-6">Posts</h1>
             {posts.length > 0 ? (
-                <div>
-                    {posts.map((post, index) => (
+                <div className="space-y-6">
+                    {posts.map((post) => (
                         <Post post={post} key={post['_id']} />
                     ))}
                 </div>
             ) : (
-                <p>No posts available.</p>
+                <p className="text-gray-500">No posts available.</p>
             )}
         </div>
     );
+    
 };
 
 const Post = ({ post }: { post: any }) => {
     const user = useRecoilValue(userAtom);
     const [isBookmarked,setIsBookmarked] = useState(false);
+    const [isLiked,setIsLiked] = useState(false);
+    // console.log(post);
     // console.log(user);
+    // if(post.likes.includes(user.id)) setIsLiked(true)
+    // if(user.bookmarks.includes(post['_id'])) setIsBookmarked(true)
+
     
     const [comment,setComment] = useState('');
     const commentRef = useRef(null);
@@ -76,26 +82,35 @@ const Post = ({ post }: { post: any }) => {
             if(!res.data.success){
                 console.log(`unable to Like`);
             }
-            console.log(`liked successfully`);
-            toast.success(`liked successfully`);
+            if(res.data.action === "like"){
+                setIsLiked(true);
+                // console.log(`post Liked successfully`);
+                toast.success(`post Liked successfully`);
+            }
+            else if(res.data.action === "dislike"){
+                setIsLiked(false);
+                console.log(`post Disliked successfully`);
+                toast.success(`post Disliked successfully`);
+            }
+    
             
         } catch (error) {
             console.log(`Unable to Like the post`);
         }
     }
-    const addDisLikeHandler = async()=>{
-        try {
-            const res = await axios.post(`http://localhost:3000/api/v1/post/dislikePost/${post._id}`,{},{withCredentials : true});
-            if(!res.data.success){
-                console.log(`unable to disLike`);
-            }
-            console.log(`Disliked successfully`);
-            toast.success(`Disliked successfully`);
+    // const addDisLikeHandler = async()=>{
+    //     try {
+    //         const res = await axios.post(`http://localhost:3000/api/v1/post/dislikePost/${post._id}`,{},{withCredentials : true});
+    //         if(!res.data.success){
+    //             console.log(`unable to disLike`);
+    //         }
+    //         console.log(`Disliked successfully`);
+    //         toast.success(`Disliked successfully`);
             
-        } catch (error) {
-            console.log(`Unable to disLike`);
-        }
-    }
+    //     } catch (error) {
+    //         console.log(`Unable to disLike`);
+    //     }
+    // }
     const addBookmarkHandler = async()=>{
         try {
             const res = await axios.put(`http://localhost:3000/api/v1/post/bookmark/${post._id}`,{},{withCredentials : true});
@@ -120,59 +135,96 @@ const Post = ({ post }: { post: any }) => {
     }
 
     return (
-        <div className="border border-gray-300 p-4 rounded-lg mb-4 shadow-md">
-            <div className="flex items-center mb-2">
-                {(post.author.profilePic_Url) ? (
-                    <img src={post.author.profilePic_Url} alt={`${post.author.userName}'s profile`} className="h-10 w-10 rounded-full mr-3" />
-                ) : <UserRound className='bg-slate-300 mr-2 p-2 rounded-full text-lg w-10 h-10' />}
-                <h3 className="font-semibold">{post.author.userName}</h3>
+        <div className="border border-gray-200 p-5 rounded-lg shadow-md bg-white">
+            {/* Post Header */}
+            <div className="flex items-center mb-4">
+                {post.author.profilePic_Url ? (
+                    <img
+                        src={post.author.profilePic_Url}
+                        alt={`${post.author.userName}'s profile`}
+                        className="h-10 w-10 rounded-full mr-3"
+                    />
+                ) : (
+                    <UserRound className="bg-gray-300 mr-3 p-2 rounded-full text-gray-600 w-10 h-10" />
+                )}
+                <h3 className="font-semibold text-gray-800">{post.author.userName}</h3>
             </div>
-            <div>
-                <p className="text-gray-700">{post.caption}</p> {/* Display post content */}
-                <div>
-                    {
-                        post.images.length > 0 ?
-                            post.images.map((image: any, index: any) =>
-                                <div key={index}>
-                                    <img src={image} alt={`post image`} />
-                                </div>
-                            )
-                            : "NO image"
-                    }
-                </div>
+    
+            {/* Post Content */}
+            <p className="text-gray-700 mb-4">{post.caption}</p>
+    
+            {/* Post Images */}
+            <div className="space-y-4">
+                {post.images.length > 0 ? (
+                    post.images.map((image, index) => (
+                        <div key={index}>
+                            <img
+                                src={image}
+                                alt="post image"
+                                className="w-full h-auto rounded-lg"
+                            />
+                        </div>
+                    ))
+                ) : (
+                    <p className="text-gray-500">No image</p>
+                )}
             </div>
-            <div>
-                <div className='flex justify-between'>
-                    <div className='flex gap-4'>
-                        {
-                            post.likes.includes(user.id) ? <button onClick={addDisLikeHandler}><Heart className='bg-red-500' /></button>  :<button onClick={addLikeHandler}><Heart /></button>
-                        }
-                        
-                        <button onClick={commentHandler}><MessageCircle /></button>
-                        <button><ExternalLink /></button>
-                    </div>
-                    {
-                        isBookmarked ? <button className='bg-yellow-400' onClick={addBookmarkHandler}><Bookmark /></button> : <button onClick={addBookmarkHandler}><Bookmark /></button>
-                    }
-                    
-                    
+    
+            {/* Post Actions */}
+            <div className="flex justify-between items-center mt-4">
+                <div className="flex gap-4 items-center">
+                    {/* <button onClick={post.likes.includes(user.id) ? addDisLikeHandler : addLikeHandler}>
+                        <Heart className={post.likes.includes(user.id) ? 'text-red-500' : 'text-gray-500'} />
+                    </button> */}
+                    <button onClick={addLikeHandler}>
+                        <Heart className={isLiked ?  'text-red-500' : 'text-gray-500'} />
+                    </button>
+                    <button onClick={commentHandler}>
+                        <MessageCircle className="text-gray-500" />
+                    </button>
+                    <button>
+                        <ExternalLink className="text-gray-500" />
+                    </button>
                 </div>
-                <div>
-                    {post.likes.length} Likes
-                </div>
-                <div>
-                    {
-                        post.comments.length > 0 ? <span>view all {post.comments.length} comments</span> :"No comments"
-                    }
-                </div>
-                    <div>
-                        <input className='outline-none' ref={commentRef} type="text" value={comment} onChange={(e)=>setComment(e.target.value)} placeholder='Add a comment...' />
-                        <button onClick={addCommentHandler} >Comment </button>
-                    </div>
-
+                <button onClick={addBookmarkHandler}>
+                    <Bookmark className={isBookmarked ? 'text-yellow-500' : 'text-gray-500'} />
+                </button>
+            </div>
+    
+            {/* Post Like and Comment Info */}
+            <div className="mt-4 text-gray-600 text-sm">
+                <p>{post.likes.length} Likes</p>
+                <p>
+                    {post.comments.length > 0 ? (
+                        <span className="cursor-pointer text-blue-600">
+                            View all {post.comments.length} comments
+                        </span>
+                    ) : (
+                        'No comments'
+                    )}
+                </p>
+            </div>
+    
+            {/* Comment Input */}
+            <div className="mt-3 flex items-center gap-2">
+                <input
+                    ref={commentRef}
+                    type="text"
+                    className="flex-1 px-3 py-2 text-gray-800 bg-gray-100 rounded-full outline-none"
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
+                    placeholder="Add a comment..."
+                />
+                <button
+                    onClick={addCommentHandler}
+                    className="text-blue-500 font-semibold"
+                >
+                    Comment
+                </button>
             </div>
         </div>
     );
+    
 };
 
 export default Posts;
