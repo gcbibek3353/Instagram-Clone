@@ -50,32 +50,32 @@ export const addPost = async (req, res) => {
         });
     }
 };
-// correction required
 export const getAllPost = async (req, res) => {
-    // console.log('controller here');
     const posts = await PostModel.find().sort({ createdAt: -1 }).populate({ path: "author", select: "userName profilePic_Url" });
-    res.json(posts);
-    // try {
-    //     const posts = await PostModel.find().sort({ createdAt: -1 }).populate({ path: "author", select: "userName profilePic_Url" })
-    //         .populate({
-    //             path: "comments",
-    //             // options: { sort: { createdAt: -1 } },
-    //             //  sort: { createdAt: -1 } ,
-    //             populate: { path: "author", select: "userName profilePic_Url" }
-    //         })
-    //     return res.status(201).json({
-    //         message: "All posts fetched and populated successfully",
-    //         success: true,
-    //         posts
-    //     })
-    // } catch (error: any) {
-    //     console.log(error.message);
-    //     return res.status(401).json({
-    //         message: "Unable to Get all the Posts",
-    //         error: error.message,
-    //         success: false
-    //     })
-    // }
+    const postsId = posts.map(post => post._id);
+    console.log(postsId);
+    res.json({
+        success: true,
+        posts: postsId
+    });
+};
+export const getPostById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const post = await PostModel.findById(id).sort({ createdAt: -1 }).populate({ path: "author", select: "userName profilePic_Url" });
+        return res.status(201).json({
+            success: true,
+            post
+        });
+    }
+    catch (error) {
+        console.log(error.message);
+        return res.status(401).json({
+            message: "Unable to Add Post",
+            error: error.message,
+            success: false
+        });
+    }
 };
 export const getUserPost = async (req, res) => {
     try {
@@ -101,58 +101,6 @@ export const getUserPost = async (req, res) => {
         });
     }
 };
-// export const likePost = async (req: CustomRequest, res: Response) => {
-//     // This is a bad method because single user can like same post multiple times
-//     try {
-//         const userId = req.id;
-//         const postId = req.params.id;
-//         const post = await PostModel.findById(postId);
-//         if (!post) return res.status(401).json({
-//             message: "The post you are trying to like doesn't exists",
-//             success: false
-//         })
-//         await post.updateOne({ $addToSet: { likes: userId } });
-//         await post.save();
-//         // implement socket.io for real-time notification
-//         return res.status(201).json({
-//             message : "Post liked successfully",
-//             success : true,
-//         })
-//     } catch (error: any) {
-//         console.log(error.message);
-//         return res.status(401).json({
-//             message: "Unable to Like the post",
-//             error: error.message,
-//             success: false
-//         })
-//     }
-// }
-// export const disLikePost = async (req: CustomRequest, res: Response) => {
-//     //  Bad approach because any person can dislike any post even if s/he hadn't liked it
-//     try {
-//         const userId = req.id;
-//         const postId = req.params.id;
-//         const post = await PostModel.findById(postId);
-//         if (!post) return res.status(401).json({
-//             message: "The post you are trying to like doesn't exists",
-//             success: false
-//         })
-//         await post.updateOne({ $pull: { likes: userId } });
-//         await post.save();
-//         // implement socket.io for real-time notification
-//         return res.status(201).json({
-//             message : "Post disLiked successfully",
-//             success : true,
-//         })
-//     } catch (error: any) {
-//         console.log(error.message);
-//         return res.status(401).json({
-//             message: "Unable to Like the post",
-//             error: error.message,
-//             success: false
-//         })
-//     }
-// }
 export const addComment = async (req, res) => {
     try {
         const { text } = req.body;
@@ -256,7 +204,7 @@ export const bookMarkPost = async (req, res) => {
             return res.status(201).json({ type: 'unsaved', message: 'Post removed from bookmark', success: true, action: 'unbookmark' });
         }
         else {
-            //logic to bookmark
+            //logic to bookmarkd
             await user.updateOne({ $addToSet: { bookmarks: post._id } });
             await user.save();
             return res.status(201).json({ type: 'saved', message: 'Post bookmarked', success: true, action: 'bookmark' });

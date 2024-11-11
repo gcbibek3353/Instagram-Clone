@@ -12,9 +12,9 @@ const Posts = () => {
         const fetchAllPost = async () => {
             try {
                 const res = await axios.get('http://localhost:3000/api/v1/post/getallposts', { withCredentials: true });
-                if (res.data) {
-                    // console.log(res.data);
-                    setPosts(res.data);
+                if (res.data && res.data.success) {
+                    console.log(res.data);
+                    setPosts(res.data.posts);
                 }
             } catch (error) {
                 console.log(error);
@@ -29,7 +29,7 @@ const Posts = () => {
             {posts.length > 0 ? (
                 <div className="space-y-6">
                     {posts.map((post) => (
-                        <Post post={post} key={post['_id']} />
+                        <Post id={post} key={post} />
                     ))}
                 </div>
             ) : (
@@ -40,22 +40,42 @@ const Posts = () => {
     
 };
 
-const Post = ({ post }: { post: any }) => {
-    const user = useRecoilValue(userAtom);
+const Post = ({ id }: { id: any }) => {
+    const [post, setPost] = useState({
+        author: { profilePic_Url: '', userName: '' },
+        images: [],
+        likes: [],
+        comments: [],
+        caption: '',
+    });
+
     const [isBookmarked,setIsBookmarked] = useState(false);
     const [isLiked,setIsLiked] = useState(false);
-    // console.log(post);
-    // console.log(user);
-    // if(post.likes.includes(user.id)) setIsLiked(true)
-    // if(user.bookmarks.includes(post['_id'])) setIsBookmarked(true)
 
-    
+    useEffect(()=>{
+        const fetchPost = async () => {
+            try {
+                const res = await axios.get(`http://localhost:3000/api/v1/post/getpost/${id}`, { withCredentials: true });
+               if(!res.data || !res.data.success){
+                console.log(`failed to load post`);
+               }
+               console.log(res.data.post);
+               setPost(res.data.post);
+
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        fetchPost();
+    },[id,isLiked,isBookmarked])
+
+
     const [comment,setComment] = useState('');
     const commentRef = useRef(null);
 
     const addCommentHandler = async()=>{
         try {
-            const res = await axios.post(`http://localhost:3000/api/v1/post/comment/${post._id}`,{text : comment},{withCredentials : true});
+            const res = await axios.post(`http://localhost:3000/api/v1/post/comment/${id}`,{text : comment},{withCredentials : true});
             if(!res.data.success){
                 console.log(`unable to comment`);
             }
@@ -78,7 +98,7 @@ const Post = ({ post }: { post: any }) => {
 
     const addLikeHandler = async()=>{
         try {
-            const res = await axios.post(`http://localhost:3000/api/v1/post/likePost/${post._id}`,{},{withCredentials : true});
+            const res = await axios.post(`http://localhost:3000/api/v1/post/likePost/${id}`,{},{withCredentials : true});
             if(!res.data.success){
                 console.log(`unable to Like`);
             }
@@ -89,7 +109,7 @@ const Post = ({ post }: { post: any }) => {
             }
             else if(res.data.action === "dislike"){
                 setIsLiked(false);
-                console.log(`post Disliked successfully`);
+                // console.log(`post Disliked successfully`);
                 toast.success(`post Disliked successfully`);
             }
     
@@ -113,7 +133,7 @@ const Post = ({ post }: { post: any }) => {
     // }
     const addBookmarkHandler = async()=>{
         try {
-            const res = await axios.put(`http://localhost:3000/api/v1/post/bookmark/${post._id}`,{},{withCredentials : true});
+            const res = await axios.put(`http://localhost:3000/api/v1/post/bookmark/${id}`,{},{withCredentials : true});
             console.log(res);
             if(!res.data.success){
                 console.log(res);
@@ -134,30 +154,30 @@ const Post = ({ post }: { post: any }) => {
             console.log(`Unable to Save post`);
         }
     }
-
+    
     return (
         <div className="border border-gray-200 p-5 rounded-lg shadow-md bg-white">
             {/* Post Header */}
             <div className="flex items-center mb-4">
-                {post.author.profilePic_Url ? (
+                {post.author?.profilePic_Url ? (
                     <img
                         src={post.author.profilePic_Url}
-                        alt={`${post.author.userName}'s profile`}
+                        alt={`${post.author?.userName}'s profile`}
                         className="h-10 w-10 rounded-full mr-3"
                     />
                 ) : (
                     <UserRound className="bg-gray-300 mr-3 p-2 rounded-full text-gray-600 w-10 h-10" />
                 )}
-                <h3 className="font-semibold text-gray-800">{post.author.userName}</h3>
+                <h3 className="font-semibold text-gray-800">{post.author?.userName}</h3>
             </div>
     
             {/* Post Content */}
-            <p className="text-gray-700 mb-4">{post.caption}</p>
+            <p className="text-gray-700 mb-4">{post?.caption}</p>
     
             {/* Post Images */}
             <div className="space-y-4">
-                {post.images.length > 0 ? (
-                    post.images.map((image, index) => (
+                {post?.images.length > 0 ? (
+                    post?.images.map((image, index) => (
                         <div key={index}>
                             <img
                                 src={image}
@@ -194,11 +214,11 @@ const Post = ({ post }: { post: any }) => {
     
             {/* Post Like and Comment Info */}
             <div className="mt-4 text-gray-600 text-sm">
-                <p>{post.likes.length} Likes</p>
+                <p>{post?.likes.length} Likes</p>
                 <p>
-                    {post.comments.length > 0 ? (
+                    {post?.comments.length > 0 ? (
                         <span className="cursor-pointer text-blue-600">
-                            View all {post.comments.length} comments
+                            View all {post?.comments.length} comments
                         </span>
                     ) : (
                         'No comments'
@@ -225,6 +245,7 @@ const Post = ({ post }: { post: any }) => {
             </div>
         </div>
     );
+
     
 };
 

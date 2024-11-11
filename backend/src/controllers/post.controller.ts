@@ -59,35 +59,33 @@ export const addPost = async (req: CustomRequest, res: Response) => {
         })
     }
 }
-// correction required
+
 export const getAllPost = async (req: CustomRequest, res: Response) => {
-    // console.log('controller here');
-    const posts = await PostModel.find().sort({createdAt : -1}).populate({ path: "author", select: "userName profilePic_Url" })
-    res.json(posts)
+    const posts = await PostModel.find().sort({ createdAt: -1 }).populate({ path: "author", select: "userName profilePic_Url" })
+    const postsId = posts.map(post => post._id);
+    console.log(postsId);
+    res.json({
+        success: true,
+        posts: postsId
+    })
+}
 
-    // try {
-    //     const posts = await PostModel.find().sort({ createdAt: -1 }).populate({ path: "author", select: "userName profilePic_Url" })
-    //         .populate({
-    //             path: "comments",
-    //             // options: { sort: { createdAt: -1 } },
-    //             //  sort: { createdAt: -1 } ,
-    //             populate: { path: "author", select: "userName profilePic_Url" }
-    //         })
-
-    //     return res.status(201).json({
-    //         message: "All posts fetched and populated successfully",
-    //         success: true,
-    //         posts
-    //     })
-
-    // } catch (error: any) {
-    //     console.log(error.message);
-    //     return res.status(401).json({
-    //         message: "Unable to Get all the Posts",
-    //         error: error.message,
-    //         success: false
-    //     })
-    // }
+export const getPostById = async (req : CustomRequest , res : Response) =>{
+    try {
+        const { id } = req.params;
+        const post = await PostModel.findById(id).sort({ createdAt: -1 }).populate({ path: "author", select: "userName profilePic_Url" });
+        return res.status(201).json({
+            success : true,
+            post
+        })
+    } catch (error : any) {
+        console.log(error.message);
+        return res.status(401).json({
+            message: "Unable to Add Post",
+            error: error.message,
+            success: false
+        })
+    }
 }
 
 export const getUserPost = async (req: CustomRequest, res: Response) => {
@@ -114,63 +112,6 @@ export const getUserPost = async (req: CustomRequest, res: Response) => {
         })
     }
 }
-
-// export const likePost = async (req: CustomRequest, res: Response) => {
-//     // This is a bad method because single user can like same post multiple times
-//     try {
-//         const userId = req.id;
-//         const postId = req.params.id;
-//         const post = await PostModel.findById(postId);
-//         if (!post) return res.status(401).json({
-//             message: "The post you are trying to like doesn't exists",
-//             success: false
-//         })
-//         await post.updateOne({ $addToSet: { likes: userId } });
-//         await post.save();
-//         // implement socket.io for real-time notification
-
-//         return res.status(201).json({
-//             message : "Post liked successfully",
-//             success : true,
-//         })
-
-//     } catch (error: any) {
-//         console.log(error.message);
-//         return res.status(401).json({
-//             message: "Unable to Like the post",
-//             error: error.message,
-//             success: false
-//         })
-//     }
-// }
-
-// export const disLikePost = async (req: CustomRequest, res: Response) => {
-//     //  Bad approach because any person can dislike any post even if s/he hadn't liked it
-//     try {
-//         const userId = req.id;
-//         const postId = req.params.id;
-//         const post = await PostModel.findById(postId);
-//         if (!post) return res.status(401).json({
-//             message: "The post you are trying to like doesn't exists",
-//             success: false
-//         })
-//         await post.updateOne({ $pull: { likes: userId } });
-//         await post.save();
-//         // implement socket.io for real-time notification
-
-//         return res.status(201).json({
-//             message : "Post disLiked successfully",
-//             success : true,
-//         })
-//     } catch (error: any) {
-//         console.log(error.message);
-//         return res.status(401).json({
-//             message: "Unable to Like the post",
-//             error: error.message,
-//             success: false
-//         })
-//     }
-// }
 
 export const addComment = async (req: CustomRequest, res: Response) => {
     try {
@@ -271,22 +212,22 @@ export const bookMarkPost = async (req: CustomRequest, res: Response) => {
         const postId = req.params.id;
 
         const post = await PostModel.findById(postId);
-        if(!post) return res.status(404).json({message:'Post which you want to bookmark/Unbookmark doesnt exists', success:false});
+        if (!post) return res.status(404).json({ message: 'Post which you want to bookmark/Unbookmark doesnt exists', success: false });
 
         const user = await UserModel.findById(userId);
-        if(!user) return;
-        
+        if (!user) return;
+
         // user?.bookmarks.push(postId);
-        if(user?.bookmarks.includes(postId)){
+        if (user?.bookmarks.includes(postId)) {
             //logic to unbookmark
-            await user.updateOne({$pull:{bookmarks:post._id}});
+            await user.updateOne({ $pull: { bookmarks: post._id } });
             await user.save();
-            return res.status(201).json({type:'unsaved', message:'Post removed from bookmark', success:true , action : 'unbookmark'});
-        }else{
-            //logic to bookmark
-            await user.updateOne({$addToSet:{bookmarks:post._id}});
+            return res.status(201).json({ type: 'unsaved', message: 'Post removed from bookmark', success: true, action: 'unbookmark' });
+        } else {
+            //logic to bookmarkd
+            await user.updateOne({ $addToSet: { bookmarks: post._id } });
             await user.save();
-            return res.status(201).json({type:'saved', message:'Post bookmarked', success:true , action : 'bookmark'});
+            return res.status(201).json({ type: 'saved', message: 'Post bookmarked', success: true, action: 'bookmark' });
         }
 
     } catch (error: any) {
@@ -299,35 +240,35 @@ export const bookMarkPost = async (req: CustomRequest, res: Response) => {
     }
 }
 
-export const likePost = async (req : CustomRequest , res : Response) =>{
+export const likePost = async (req: CustomRequest, res: Response) => {
     try {
         const userId = req.id as any;
         const postId = req.params.id;
 
         const post = await PostModel.findById(postId);
-        if(!post) return res.status(404).json({message:'Post which you want to Like/disLike doesnt exists', success:false});
+        if (!post) return res.status(404).json({ message: 'Post which you want to Like/disLike doesnt exists', success: false });
 
         const user = await UserModel.findById(userId);
-        if(!user) return;
+        if (!user) return;
 
         console.log(post);
         console.log(user);
 
         // userId is string typed as any but includes need (objectID)
-        if(post?.likes.includes(userId)){
+        if (post?.likes.includes(userId)) {
             // logic to dislike
-            await post.updateOne({$pull:{likes:user._id}});
+            await post.updateOne({ $pull: { likes: user._id } });
             await post.save();
-            return res.status(201).json({ message:'Post Disliked', success:true , action : 'dislike'});
+            return res.status(201).json({ message: 'Post Disliked', success: true, action: 'dislike' });
         }
         else {
             // logic to like 
-            await post.updateOne({$addToSet:{likes:user._id}});
+            await post.updateOne({ $addToSet: { likes: user._id } });
             await post.save();
-            return res.status(201).json({ message:'Post Liked', success:true , action : 'like'});
+            return res.status(201).json({ message: 'Post Liked', success: true, action: 'like' });
         }
 
-    } catch (error : any) {
+    } catch (error: any) {
         console.log(error.message);
         return res.status(401).json({
             message: "Unable to bookmark the Posts",

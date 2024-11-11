@@ -1,14 +1,13 @@
 import { Router } from "express";
 import upload from "../middlewares/multer.js";
 import { isUserAuthenticated } from "../middlewares/isUserAuthenticated.js";
-import { addComment, addPost, bookMarkPost, deletePost, getAllPost, getCommentsOfPost, getUserPost, likePost } from "../controllers/post.controller.js";
+import { addComment, addPost, bookMarkPost, deletePost, getAllPost, getCommentsOfPost, getPostById, getUserPost, likePost } from "../controllers/post.controller.js";
 const router = Router();
 router.post('/addpost', isUserAuthenticated, upload.array('images', 10), addPost);
 router.get('/getallposts', isUserAuthenticated, getAllPost);
+router.get('/getpost/:id', isUserAuthenticated, getPostById);
 router.get('/getUserPost/:id', getUserPost);
 router.post('/likePost/:id', isUserAuthenticated, likePost);
-// router.post('/testlikePost/:id',isUserAuthenticated as any,like2 as any);
-// router.post('/dislikePost/:id',isUserAuthenticated as any,disLikePost as any);
 router.post('/comment/:id', isUserAuthenticated, addComment);
 router.get('/getcomment/:id', isUserAuthenticated, getCommentsOfPost);
 router.delete('/:id', isUserAuthenticated, deletePost);
