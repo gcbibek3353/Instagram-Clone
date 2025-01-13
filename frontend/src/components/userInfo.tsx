@@ -23,7 +23,7 @@ const userInfo = ({ userId }: { userId: string }) => {
   }, [userId])
 
   return (
-    <div>
+    <div className='p-2 m-3'>
       {profile?.user?.userName ? (
         <Link to={`/profile/${userId}`}  className='flex gap-2'>
           {

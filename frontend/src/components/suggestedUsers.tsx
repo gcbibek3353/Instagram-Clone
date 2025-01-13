@@ -84,7 +84,7 @@ const FollowUnfollow = ({id} : {id:string}) => {
   }
 
   useEffect(() => {
-    followHandler(id);
+    // followHandler(id);
   }, [])
 
   return <button

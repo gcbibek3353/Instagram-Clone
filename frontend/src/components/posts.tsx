@@ -156,7 +156,7 @@ const Post = ({ id }: { id: any }) => {
     }
     
     return (
-        <div className="border border-gray-200 p-5 rounded-lg shadow-md bg-white">
+        <div className="border p-5 rounded-lg shadow-md bg-white">
             {/* Post Header */}
             <div className="flex items-center mb-4">
                 {post.author?.profilePic_Url ? (
