@@ -4,29 +4,8 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 
-const SuggestedUsers = ({ userId }: { userId: string }) => {
+const SuggestedUsers = () => {
   const [suggestedUsers, setSuggestedUsers] = useState([]);
-  // const [isfollowing, setIsFollowing] = useState();
-
-  // const followHandler = async (userTofollow: string) => {
-  //   try {
-  //     const res = await axios.post(`http://localhost:3000/api/v1/user/followorunfollow/${userTofollow}`, {}, {
-  //       withCredentials: true
-  //     });
-  //     if (res.data.action == 'follow') {
-  //       setIsFollowing(true);
-  //       toast.success('followed successfully')
-  //     }
-  //     else if (res.data.action == 'unfollow') {
-  //       toast.success('unfollowed successfully')
-  //       setIsFollowing(false);
-  //     }
-  //     console.log(res);
-
-  //   } catch (error: any) {
-  //     console.log(error.message);
-  //   }
-  // }
 
   useEffect(() => {
     const fetchAllSuggestedUsers = async () => {
@@ -36,7 +15,6 @@ const SuggestedUsers = ({ userId }: { userId: string }) => {
         });
         if (res.data.success) {
           console.log(res.data);
-          // setIsFollowing(res.data.isFollowing);
           setSuggestedUsers(res.data.suggestedUsers);
         }
       } catch (error) {
@@ -68,14 +46,7 @@ const SuggestedUsers = ({ userId }: { userId: string }) => {
                 <p className="text-xs text-gray-500">{suggestedUser.bio ? suggestedUser.bio : 'bio here...'}</p>
               </div>
             </Link>
-
-            {/* <button
-              className="text-blue-500 text-xs font-semibold hover:text-blue-600"
-              onClick={() => followHandler(suggestedUser._id)}
-            >
-              {suggestedUser.isFollowing ? 'Unfollow' : 'follow'}
-            </button> */}
-            <FollowUnfollow id={suggestedUser._id} isFollowing={suggestedUser.usFollowing} />
+            <FollowUnfollow id={suggestedUser._id} isFollowing={suggestedUser.isFollowing} />
           </div>
         ))}
       </div>
@@ -88,7 +59,7 @@ export default SuggestedUsers;
 
 
 const FollowUnfollow = ({ id,isFollowing }: { id: string,isFollowing : boolean }) => {
-  const [isfollowing, setIsFollowing] = useState(isFollowing);
+  const [isfollowing, setIsFollowing] = useState(isFollowing);  
 
   const followHandler = async (userTofollow: string) => {
     try {

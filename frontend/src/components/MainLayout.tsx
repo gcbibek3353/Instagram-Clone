@@ -16,7 +16,7 @@ const MainLayout = () => {
       </div>
       <div className=' h-screen p-3 sticky top-10 right-10'>
         <UserInfo userId={user?.id} />
-        <SuggestedUsers userId={user?.id} />
+        <SuggestedUsers />
       </div>
 
     </div>
