@@ -11,7 +11,7 @@ export const addPost = async (req: CustomRequest, res: Response) => {
     try {
         const authorId = req.id;
         const { caption } = req.body;
-        console.log(caption);
+        // console.log(caption);
         const images = req.files as Express.Multer.File[];
 
         if (!caption && !images) return res.status(401).json({
@@ -63,7 +63,7 @@ export const addPost = async (req: CustomRequest, res: Response) => {
 export const getAllPost = async (req: CustomRequest, res: Response) => {
     const posts = await PostModel.find().sort({ createdAt: -1 }).populate({ path: "author", select: "userName profilePic_Url" })
     const postsId = posts.map(post => post._id);
-    console.log(postsId);
+    // console.log(postsId);
     res.json({
         success: true,
         posts: postsId
@@ -251,8 +251,8 @@ export const likePost = async (req: CustomRequest, res: Response) => {
         const user = await UserModel.findById(userId);
         if (!user) return;
 
-        console.log(post);
-        console.log(user);
+        // console.log(post);
+        // console.log(user);
 
         // userId is string typed as any but includes need (objectID)
         if (post?.likes.includes(userId)) {

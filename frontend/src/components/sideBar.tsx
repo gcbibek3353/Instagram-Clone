@@ -1,7 +1,7 @@
 import { userAtom } from '@/recoil/user';
 import axios from 'axios';
 import { Heart, Home, LogOut, MessageCircle, PlusSquare, Search, TrendingUp, UserRound} from 'lucide-react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import { toast } from 'sonner';
 
@@ -30,7 +30,9 @@ const SideBar = ({ userId }: { userId: string }) => {
 
             return (
                 <div className="bg-white text-gray-800 w-64 h-screen p-4 relative left-0 top-0 shadow-lg border-r border-gray-200">
+                    <Link to={`/`}> 
                     <h2 className="text-2xl font-bold mb-6">Logo</h2>
+                    </Link>
                     <ul className="space-y-4">
                         <li>
                             <NavLink to={`/`} className={navLinkStyles}>

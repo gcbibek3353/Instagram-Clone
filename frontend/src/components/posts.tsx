@@ -13,7 +13,7 @@ const Posts = () => {
             try {
                 const res = await axios.get('http://localhost:3000/api/v1/post/getallposts', { withCredentials: true });
                 if (res.data && res.data.success) {
-                    console.log(res.data);
+                    // console.log(res.data);
                     setPosts(res.data.posts);
                 }
             } catch (error) {
@@ -134,19 +134,19 @@ const Post = ({ id }: { id: any }) => {
     const addBookmarkHandler = async()=>{
         try {
             const res = await axios.put(`http://localhost:3000/api/v1/post/bookmark/${id}`,{},{withCredentials : true});
-            console.log(res);
+            // console.log(res);
             if(!res.data.success){
-                console.log(res);
-                console.log(`unable to Save Post`);
+                // console.log(res);
+                // console.log(`unable to Save Post`);
             }
             if(res.data.action === "bookmark"){
                 setIsBookmarked(true);
-                console.log(`post saved successfully`);
+                // console.log(`post saved successfully`);
                 toast.success(`post saved successfully`);
             }
             else if(res.data.action === "unbookmark"){
                 setIsBookmarked(false);
-                console.log(`post unSaved successfully`);
+                // console.log(`post unSaved successfully`);
                 toast.success(`post unSaved successfully`);
             }
             

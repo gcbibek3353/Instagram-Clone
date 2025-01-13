@@ -18,7 +18,7 @@ const profile = () => {
         const userProfile = await axios.get(`http://localhost:3000/api/v1/user/profile/${id}`, {
           withCredentials: true
         });
-        console.log(userProfile.data);
+        // console.log(userProfile.data);
         setProfile(userProfile.data);
       } catch (error) {
         console.log(error);

@@ -191,13 +191,22 @@ export const editProfile = async (req, res) => {
 export const getSuggestedUser = async (req, res) => {
     try {
         const { id } = req;
-        // In real instagram they will apply different logic to recommend Users but we are randomly suggesting users
+        if (!id) {
+            throw new Error("Current user ID is undefined");
+        }
+        const currentUserId = new mongoose.Types.ObjectId(id);
         const suggestedUsers = await UserModel.find({ _id: { $ne: id } }).select('-password').limit(5);
-        // const suggestedUsers = await UserModel.find({ _id: id }).select('-password'); // not the exact query find users where _id != id
+        const newSuggestedUsers = suggestedUsers.map(suggestedUser => {
+            const isFollowing = suggestedUser.followers.includes(currentUserId);
+            return {
+                ...suggestedUser.toObject(),
+                isFollowing
+            };
+        });
         return res.status(201).json({
             message: "suggested Users",
             success: true,
-            suggestedUsers
+            suggestedUsers: newSuggestedUsers
         });
     }
     catch (error) {
