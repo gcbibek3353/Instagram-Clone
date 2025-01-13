@@ -2,8 +2,6 @@ import axios from 'axios';
 import { useEffect, useRef, useState } from 'react';
 import { Bookmark, Heart, MessageCircle, UserRound, ExternalLink } from 'lucide-react';
 import { toast } from 'sonner';
-import { useRecoilValue } from 'recoil';
-import { userAtom } from '@/recoil/user';
 
 const Posts = () => {
     const [posts, setPosts] = useState([]);
@@ -24,7 +22,7 @@ const Posts = () => {
     }, []);
 
     return (
-        <div className="p-6 bg-gray-50 min-h-screen">
+        <div className="p-6 min-h-screen">
             <h1 className="text-3xl font-extrabold text-gray-800 mb-6">Posts</h1>
             {posts.length > 0 ? (
                 <div className="space-y-6">
@@ -41,6 +39,9 @@ const Posts = () => {
 };
 
 const Post = ({ id }: { id: any }) => {
+    const [isBookmarked,setIsBookmarked] = useState(false);
+    const [isLiked,setIsLiked] = useState(false);
+
     const [post, setPost] = useState({
         author: { profilePic_Url: '', userName: '' },
         images: [],
@@ -48,9 +49,9 @@ const Post = ({ id }: { id: any }) => {
         comments: [],
         caption: '',
     });
-
-    const [isBookmarked,setIsBookmarked] = useState(false);
-    const [isLiked,setIsLiked] = useState(false);
+    
+    const [comment,setComment] = useState('');
+    const commentRef = useRef(null);
 
     useEffect(()=>{
         const fetchPost = async () => {
@@ -59,19 +60,17 @@ const Post = ({ id }: { id: any }) => {
                if(!res.data || !res.data.success){
                 console.log(`failed to load post`);
                }
-               console.log(res.data.post);
+            //    console.log(res.data.post);
                setPost(res.data.post);
-
+               setIsLiked(res.data.isLiked);
+               setIsBookmarked(res.data.isBookmarked);
             } catch (error) {
                 console.log(error);
             }
         }
         fetchPost();
-    },[id,isLiked,isBookmarked])
+    },[id,isLiked,isBookmarked,comment])
 
-
-    const [comment,setComment] = useState('');
-    const commentRef = useRef(null);
 
     const addCommentHandler = async()=>{
         try {

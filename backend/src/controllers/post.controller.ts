@@ -6,6 +6,7 @@ import cloudinary from "../utils/cloudinary.js";
 import { UserModel } from "../models/user.model.js";
 import { populate } from "dotenv";
 import { CommentModel } from "../models/comment.model.js";
+import mongoose from "mongoose";
 
 export const addPost = async (req: CustomRequest, res: Response) => {
     try {
@@ -61,9 +62,8 @@ export const addPost = async (req: CustomRequest, res: Response) => {
 }
 
 export const getAllPost = async (req: CustomRequest, res: Response) => {
-    const posts = await PostModel.find().sort({ createdAt: -1 }).populate({ path: "author", select: "userName profilePic_Url" })
+    const posts = await PostModel.find().sort({ createdAt: -1 });
     const postsId = posts.map(post => post._id);
-    // console.log(postsId);
     res.json({
         success: true,
         posts: postsId
@@ -72,11 +72,23 @@ export const getAllPost = async (req: CustomRequest, res: Response) => {
 
 export const getPostById = async (req : CustomRequest , res : Response) =>{
     try {
+        const userId = req.id;
+        if (!userId) {
+            throw new Error("Current user ID is undefined");
+          }
+          const currentUserId = new mongoose.Types.ObjectId(userId);
+
         const { id } = req.params;
         const post = await PostModel.findById(id).sort({ createdAt: -1 }).populate({ path: "author", select: "userName profilePic_Url" });
+        const isLiked = post?.likes.includes(currentUserId);
+        const user = await UserModel.findById(userId);
+        const isBookmarked = user?.bookmarks.includes(id);
+        
         return res.status(201).json({
             success : true,
-            post
+            post,
+            isLiked,
+            isBookmarked
         })
     } catch (error : any) {
         console.log(error.message);
