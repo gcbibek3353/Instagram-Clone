@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input"
 import axios from "axios";
 import { Link,useNavigate } from "react-router-dom";
 import { readFileAsDataURL } from "@/lib/utils";
-import { toast } from "sonner"
+// import { toast } from "sonner"
 import { useRecoilValue } from "recoil";
 import { userAtom } from "@/recoil/user";
 import { UserRound } from "lucide-react";
@@ -11,16 +11,35 @@ import { UserRound } from "lucide-react";
 
 const createPost = () => {
   const user = useRecoilValue(userAtom);
-  const navigate = useNavigate();
+  const [files, setFiles] = useState("");
+  const [imagePreviews,setImagePreviews] = useState<string[]>([]);
+
+  // const navigate = useNavigate();
   const imgRef = useRef();
   const [caption, setCaption] = useState('');
 
   const postCreateHandler = async (e: any) => {
-    
+    e.preventDefault();
   }
 
-  const fileChangeHandler = ()=>{}
+  const fileChangeHandler = async(e : any)=>{
+    const files = e.target.files;
+    console.log('files are ' + files);
+    if(!files || files.length === 0){
+      console.log('No file selected');
+    }
+    else{
+      setFiles(files);
+      const dataUrls = files.map(async(file: any) => await readFileAsDataURL(file));
+      setImagePreviews(dataUrls);
+    }
+  }
 
+  const handleButtonClick = ()=>{
+    if(imgRef.current){
+      imgRef.current.click();
+    }
+  }
   return (
 
     <div>
@@ -53,19 +72,30 @@ const createPost = () => {
           className="focus-visible:ring-transparent my-2"
           placeholder="Write a caption ..."
         />
-        <input type="files"
+        {
+          imagePreviews && imagePreviews.length > 0 && (
+            <div>
+              {imagePreviews.map((image, index) => (
+                <img key={index} src={image} alt="preview" className="w-20 h-20" />
+              ))}
+            </div>
+          )
+        }
+
+        <input type="file"
         name="postImage"
         ref = {imgRef}
-        // className="hidden"
+        className="hidden"
         onChange={fileChangeHandler}
          />
-         {/* <button onClick={imgRef.current.click()}>Select from Computer</button> */}
+         <button 
+        onClick={handleButtonClick}
+         >Select from Computer</button>
          <button type="submit" className="w-full">Post</button>
       </form>
     </div>
   )
 }
-
 
 
 export default createPost

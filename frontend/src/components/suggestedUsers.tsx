@@ -14,7 +14,7 @@ const SuggestedUsers = () => {
           withCredentials: true,
         });
         if (res.data.success) {
-          console.log(res.data);
+          // console.log(res.data);
           setSuggestedUsers(res.data.suggestedUsers);
         }
       } catch (error) {

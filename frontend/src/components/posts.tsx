@@ -117,19 +117,7 @@ const Post = ({ id }: { id: any }) => {
             console.log(`Unable to Like the post`);
         }
     }
-    // const addDisLikeHandler = async()=>{
-    //     try {
-    //         const res = await axios.post(`http://localhost:3000/api/v1/post/dislikePost/${post._id}`,{},{withCredentials : true});
-    //         if(!res.data.success){
-    //             console.log(`unable to disLike`);
-    //         }
-    //         console.log(`Disliked successfully`);
-    //         toast.success(`Disliked successfully`);
-            
-    //     } catch (error) {
-    //         console.log(`Unable to disLike`);
-    //     }
-    // }
+  
     const addBookmarkHandler = async()=>{
         try {
             const res = await axios.put(`http://localhost:3000/api/v1/post/bookmark/${id}`,{},{withCredentials : true});

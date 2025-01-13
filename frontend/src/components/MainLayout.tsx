@@ -12,7 +12,7 @@ const MainLayout = () => {
     <div className='flex gap-10 justify-between'>
       <SideBar userId={user?.id} />
       <div>
-        <Outlet />
+        <Outlet />  
       </div>
       <div className=' h-screen p-3 sticky top-10 right-10'>
         <UserInfo userId={user?.id} />
