@@ -8,7 +8,7 @@ export const addPost = async (req, res) => {
     try {
         const authorId = req.id;
         const { caption } = req.body;
-        // console.log(caption);
+        console.log(caption);
         const images = req.files;
         if (!caption && !images)
             return res.status(401).json({

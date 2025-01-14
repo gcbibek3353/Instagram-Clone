@@ -12,7 +12,7 @@ export const addPost = async (req: CustomRequest, res: Response) => {
     try {
         const authorId = req.id;
         const { caption } = req.body;
-        // console.log(caption);
+        console.log(caption);
         const images = req.files as Express.Multer.File[];
 
         if (!caption && !images) return res.status(401).json({

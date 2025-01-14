@@ -29,7 +29,7 @@ const SideBar = ({ userId }: { userId: string }) => {
             : "flex items-center p-2 hover:bg-gray-100 rounded transition";
 
             return (
-                <div className="bg-white text-gray-800 w-64 h-screen p-4 sticky left-0 top-0 shadow-lg border-r border-gray-200">
+                <div className="bg-white text-gray-800 w-64 h-screen p-10 sticky left-0 top-0 shadow-lg border-r border-gray-200">
                     <Link to={`/`}> 
                     <h2 className="text-2xl font-bold mb-6">Logo</h2>
                     </Link>

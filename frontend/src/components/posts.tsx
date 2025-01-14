@@ -3,6 +3,15 @@ import { useEffect, useRef, useState } from 'react';
 import { Bookmark, Heart, MessageCircle, UserRound, ExternalLink } from 'lucide-react';
 import { toast } from 'sonner';
 
+import {
+    Carousel,
+    CarouselContent,
+    CarouselItem,
+    CarouselNext,
+    CarouselPrevious,
+} from "@/components/ui/carousel"
+
+
 const Posts = () => {
     const [posts, setPosts] = useState([]);
 
@@ -22,7 +31,7 @@ const Posts = () => {
     }, []);
 
     return (
-        <div className="p-6 min-h-screen">
+        <div className="p-6 min-h-screen w-3/4  ">
             <h1 className="text-3xl font-extrabold text-gray-800 mb-6">Posts</h1>
             {posts.length > 0 ? (
                 <div className="space-y-6">
@@ -35,12 +44,12 @@ const Posts = () => {
             )}
         </div>
     );
-    
+
 };
 
 const Post = ({ id }: { id: any }) => {
-    const [isBookmarked,setIsBookmarked] = useState(false);
-    const [isLiked,setIsLiked] = useState(false);
+    const [isBookmarked, setIsBookmarked] = useState(false);
+    const [isLiked, setIsLiked] = useState(false);
 
     const [post, setPost] = useState({
         author: { profilePic_Url: '', userName: '' },
@@ -49,33 +58,33 @@ const Post = ({ id }: { id: any }) => {
         comments: [],
         caption: '',
     });
-    
-    const [comment,setComment] = useState('');
+
+    const [comment, setComment] = useState('');
     const commentRef = useRef(null);
 
-    useEffect(()=>{
+    useEffect(() => {
         const fetchPost = async () => {
             try {
                 const res = await axios.get(`http://localhost:3000/api/v1/post/getpost/${id}`, { withCredentials: true });
-               if(!res.data || !res.data.success){
-                console.log(`failed to load post`);
-               }
-            //    console.log(res.data.post);
-               setPost(res.data.post);
-               setIsLiked(res.data.isLiked);
-               setIsBookmarked(res.data.isBookmarked);
+                if (!res.data || !res.data.success) {
+                    console.log(`failed to load post`);
+                }
+                //    console.log(res.data.post);
+                setPost(res.data.post);
+                setIsLiked(res.data.isLiked);
+                setIsBookmarked(res.data.isBookmarked);
             } catch (error) {
                 console.log(error);
             }
         }
         fetchPost();
-    },[id,isLiked,isBookmarked,comment])
+    }, [id, isLiked, isBookmarked, comment])
 
 
-    const addCommentHandler = async()=>{
+    const addCommentHandler = async () => {
         try {
-            const res = await axios.post(`http://localhost:3000/api/v1/post/comment/${id}`,{text : comment},{withCredentials : true});
-            if(!res.data.success){
+            const res = await axios.post(`http://localhost:3000/api/v1/post/comment/${id}`, { text: comment }, { withCredentials: true });
+            if (!res.data.success) {
                 console.log(`unable to comment`);
             }
             toast.success('commented successfully');
@@ -84,64 +93,64 @@ const Post = ({ id }: { id: any }) => {
             console.log(`Unable to comment`);
         }
     }
-    const commentHandler = ()=>{
-        if(commentRef){
+    const commentHandler = () => {
+        if (commentRef) {
             commentRef.current.focus();
             // console.log(commentRef.current);
         }
-        else{
+        else {
             console.log('no comment ref');
-            
+
         }
     }
 
-    const addLikeHandler = async()=>{
+    const addLikeHandler = async () => {
         try {
-            const res = await axios.post(`http://localhost:3000/api/v1/post/likePost/${id}`,{},{withCredentials : true});
-            if(!res.data.success){
+            const res = await axios.post(`http://localhost:3000/api/v1/post/likePost/${id}`, {}, { withCredentials: true });
+            if (!res.data.success) {
                 console.log(`unable to Like`);
             }
-            if(res.data.action === "like"){
+            if (res.data.action === "like") {
                 setIsLiked(true);
                 // console.log(`post Liked successfully`);
                 toast.success(`post Liked successfully`);
             }
-            else if(res.data.action === "dislike"){
+            else if (res.data.action === "dislike") {
                 setIsLiked(false);
                 // console.log(`post Disliked successfully`);
                 toast.success(`post Disliked successfully`);
             }
-    
-            
+
+
         } catch (error) {
             console.log(`Unable to Like the post`);
         }
     }
-  
-    const addBookmarkHandler = async()=>{
+
+    const addBookmarkHandler = async () => {
         try {
-            const res = await axios.put(`http://localhost:3000/api/v1/post/bookmark/${id}`,{},{withCredentials : true});
+            const res = await axios.put(`http://localhost:3000/api/v1/post/bookmark/${id}`, {}, { withCredentials: true });
             // console.log(res);
-            if(!res.data.success){
+            if (!res.data.success) {
                 // console.log(res);
                 // console.log(`unable to Save Post`);
             }
-            if(res.data.action === "bookmark"){
+            if (res.data.action === "bookmark") {
                 setIsBookmarked(true);
                 // console.log(`post saved successfully`);
                 toast.success(`post saved successfully`);
             }
-            else if(res.data.action === "unbookmark"){
+            else if (res.data.action === "unbookmark") {
                 setIsBookmarked(false);
                 // console.log(`post unSaved successfully`);
                 toast.success(`post unSaved successfully`);
             }
-            
+
         } catch (error) {
             console.log(`Unable to Save post`);
         }
     }
-    
+
     return (
         <div className="border p-5 rounded-lg shadow-md bg-white">
             {/* Post Header */}
@@ -157,12 +166,12 @@ const Post = ({ id }: { id: any }) => {
                 )}
                 <h3 className="font-semibold text-gray-800">{post.author?.userName}</h3>
             </div>
-    
+
             {/* Post Content */}
             <p className="text-gray-700 mb-4">{post?.caption}</p>
-    
+
             {/* Post Images */}
-            <div className="space-y-4">
+            {/* <div className="space-y-4">
                 {post?.images.length > 0 ? (
                     post?.images.map((image, index) => (
                         <div key={index}>
@@ -176,8 +185,38 @@ const Post = ({ id }: { id: any }) => {
                 ) : (
                     <p className="text-gray-500">No image</p>
                 )}
+            </div> */}
+
+            <div className='flex justify-center'>
+                {post?.images.length > 0 ?
+                    <Carousel className='w-1/2'>
+                        <CarouselContent>
+                            {(
+                                post?.images.map((image, index) => (
+
+                                    <CarouselItem key={index}>
+                                        <img
+                                            src={image}
+                                            alt="post image"
+                                            className=" h-auto rounded-lg"
+                                        />
+                                    </CarouselItem>
+                                ))
+                            )}
+                        </CarouselContent>
+                        {post?.images.length > 1 && <>
+                            <CarouselPrevious />
+                            <CarouselNext />
+                        </>}
+
+                    </Carousel>
+                    : (
+                        <p className="text-gray-500">No image</p>
+                    )}
             </div>
-    
+
+
+
             {/* Post Actions */}
             <div className="flex justify-between items-center mt-4">
                 <div className="flex gap-4 items-center">
@@ -185,7 +224,7 @@ const Post = ({ id }: { id: any }) => {
                         <Heart className={post.likes.includes(user.id) ? 'text-red-500' : 'text-gray-500'} />
                     </button> */}
                     <button onClick={addLikeHandler}>
-                        <Heart className={isLiked ?  'text-red-500' : 'text-gray-500'} />
+                        <Heart className={isLiked ? 'text-red-500' : 'text-gray-500'} />
                     </button>
                     <button onClick={commentHandler}>
                         <MessageCircle className="text-gray-500" />
@@ -198,7 +237,7 @@ const Post = ({ id }: { id: any }) => {
                     <Bookmark className={isBookmarked ? 'text-yellow-500' : 'text-gray-500'} />
                 </button>
             </div>
-    
+
             {/* Post Like and Comment Info */}
             <div className="mt-4 text-gray-600 text-sm">
                 <p>{post?.likes.length} Likes</p>
@@ -212,7 +251,7 @@ const Post = ({ id }: { id: any }) => {
                     )}
                 </p>
             </div>
-    
+
             {/* Comment Input */}
             <div className="mt-3 flex items-center gap-2">
                 <input
@@ -233,7 +272,7 @@ const Post = ({ id }: { id: any }) => {
         </div>
     );
 
-    
+
 };
 
 export default Posts;
