@@ -289,3 +289,22 @@ export const followORUnfollow = async (req: CustomRequest, res: Response): Promi
         })
     }
 }
+
+export const getAllUsers = async (req : CustomRequest, res : Response): Promise<Response> =>{
+    try {
+        const users = await UserModel.find().select('-password');
+        console.log(users);
+        return res.status(201).json({
+            message: "All Users",
+            success: true,
+            users
+        })
+    } catch (error: any) {
+        console.log(error.message);
+        return res.status(401).json({
+            message: "Unable to get all users",
+            error: error.message,
+            success: false
+        })
+    }   
+}

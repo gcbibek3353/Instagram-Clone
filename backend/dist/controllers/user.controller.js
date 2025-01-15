@@ -262,3 +262,22 @@ export const followORUnfollow = async (req, res) => {
         });
     }
 };
+export const getAllUsers = async (req, res) => {
+    try {
+        const users = await UserModel.find().select('-password');
+        console.log(users);
+        return res.status(201).json({
+            message: "All Users",
+            success: true,
+            users
+        });
+    }
+    catch (error) {
+        console.log(error.message);
+        return res.status(401).json({
+            message: "Unable to get all users",
+            error: error.message,
+            success: false
+        });
+    }
+};
