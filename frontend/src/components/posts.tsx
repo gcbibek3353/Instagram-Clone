@@ -31,7 +31,7 @@ const Posts = () => {
     }, []);
 
     return (
-        <div className="p-6 min-h-screen w-3/4  ">
+        <div className="p-6 min-h-screen lg:w-3/4  ">
             <h1 className="text-3xl font-extrabold text-gray-800 mb-6">Posts</h1>
             {posts.length > 0 ? (
                 <div className="space-y-6">
@@ -152,14 +152,14 @@ const Post = ({ id }: { id: any }) => {
     }
 
     return (
-        <div className="border p-5 rounded-lg shadow-md bg-white">
+        <div className="border p-5  rounded-lg shadow-md bg-white">
             {/* Post Header */}
             <div className="flex items-center mb-4">
                 {post.author?.profilePic_Url ? (
                     <img
                         src={post.author.profilePic_Url}
                         alt={`${post.author?.userName}'s profile`}
-                        className="h-10 w-10 rounded-full mr-3"
+                        className="h-10 w-10 rounded-full mr-3 z-0"
                     />
                 ) : (
                     <UserRound className="bg-gray-300 mr-3 p-2 rounded-full text-gray-600 w-10 h-10" />
@@ -253,7 +253,7 @@ const Post = ({ id }: { id: any }) => {
             </div>
 
             {/* Comment Input */}
-            <div className="mt-3 flex items-center gap-2">
+            <div className="mt-3 flex flex-col lg:flex-row items-center gap-2">
                 <input
                     ref={commentRef}
                     type="text"

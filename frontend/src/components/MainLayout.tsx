@@ -9,12 +9,12 @@ const MainLayout = () => {
     const user = useRecoilValue(userAtom);
     
   return (
-    <div className='flex gap-10 justify-between'>
+    <div className='flex lg:gap-10 lg:justify-between justify-center'>
       <SideBar userId={user?.id} />
       <div>
         <Outlet />  
       </div>
-      <div className='h-screen p-3 sticky top-10 right-10 w-1/3'>
+      <div className='h-screen hidden lg:block p-3 sticky top-10 right-10 w-1/3'>
         <UserInfo userId={user?.id} />
         <SuggestedUsers />
       </div>

@@ -31,7 +31,7 @@ const profile = () => {
   const renderContent = () => {
     switch (activeTab) {
       case 'posts':
-        return <div className='grid grid-cols-3 gap-3'>
+        return <div className='grid grid-cols-1 place-items-center lg:grid-cols-3 gap-3'>
           {
             (profile.user.posts.length > 0) ?
             profile.user.posts.map((post: any) => {
@@ -50,7 +50,7 @@ const profile = () => {
           }
         </div>
       case 'saved':
-        return <div className='grid grid-cols-3 gap-3'>
+        return <div className='grid grid-cols-1 place-items-center lg:grid-cols-3 gap-3'>
           {
             (profile.user.posts.length > 0) ?
             profile.user.bookmarks.map((post: any) => {
@@ -69,9 +69,9 @@ const profile = () => {
           }
         </div>
       case 'reels':
-        return <div>reels</div>
+        return <div className='text-center'>reels</div>
       case 'tags':
-        return <div>tags</div>
+        return <div className='text-center'>tags</div>
       default:
         return null
     }
@@ -84,11 +84,11 @@ const profile = () => {
   }
 
   return (
-    <div className="flex flex-col items-center gap-10 p-6 md:flex-row md:gap-20">
+    <div className="flex flex-col items-center gap-10 p-6 lg:flex-row lg:gap-20">
       <div>
         {profile?.user?.userName ? (
-          <div className="flex flex-col items-center md:items-start">
-            <div className="flex flex-col items-center gap-4 md:flex-row md:gap-6">
+          <div className="flex flex-col items-center lg:items-start">
+            <div className="flex flex-col items-center gap-4 lg:flex-row lg:gap-6">
               {
                 profile.user.profilePic_Url 
                 ? <img
@@ -100,22 +100,26 @@ const profile = () => {
 
               }
              
-              <div className="flex flex-col items-center md:items-start gap-2">
+              <div className="flex flex-col items-center lg:items-start gap-2">
                 <div className="flex items-center gap-2">
                   <span className="font-semibold text-lg">{profile.user.userName}</span>
                   {/* <Link */}
                   <span
-                    className="px-4 py-2 rounded-md bg-slate-200 hover:bg-slate-300"
+                    // className="px-4 py-2 rounded-md bg-slate-200 hover:bg-slate-300"
                     // to={`/editProfile/${id}`}
                   >
-                    Edit Profile
+                    {/* Edit Profile */}
                     </span>
                   {/* </Link> */}
-                  <span className="px-4 py-2 rounded-md bg-slate-200 hover:bg-slate-300 cursor-pointer">
-                    View Archive
+                  <span 
+                  // className="px-4 py-2 rounded-md bg-slate-200 hover:bg-slate-300 cursor-pointer"
+                  >
+                    {/* View Archive */}
                   </span>
-                  <span className="px-4 py-2 rounded-md bg-slate-200 hover:bg-slate-300 cursor-pointer">
-                    Add tools
+                  <span 
+                  // className="px-4 py-2 rounded-md bg-slate-200 hover:bg-slate-300 cursor-pointer"
+                  >
+                    {/* Add tools */}
                   </span>
                 </div>
                 <div className="flex items-center gap-4 text-gray-600">
@@ -123,14 +127,14 @@ const profile = () => {
                   <span>{profile.user.followers.length} followers</span>
                   <span>{profile.user.following.length} following</span>
                 </div>
-                <p className="text-center md:text-left text-gray-700">{profile.user.bio}</p>
+                <p className="text-center lg:text-left text-gray-700">{profile.user.bio}</p>
               </div>
             </div>
   
             <hr className="my-4 border-t border-gray-200 w-full" />
   
             <div className="w-full">
-              <ul className="flex justify-around md:justify-start gap-6 mb-4">
+              <ul className="flex lg:justify-around justify-center lg:gap-6 mb-4">
                 <button
                   className={`text-sm font-semibold ${
                     activeClass(activeTab, 'posts')
