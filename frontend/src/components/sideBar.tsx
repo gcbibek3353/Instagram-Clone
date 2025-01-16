@@ -4,6 +4,7 @@ import { Heart, Home, LogOut, MessageCircle, PlusSquare, Search, TrendingUp, Use
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import { toast } from 'sonner';
+import SearchComp from './Search';
 
 const SideBar = ({ userId }: { userId: string }) => {
     const [user, setUser] = useRecoilState(userAtom);
@@ -44,7 +45,7 @@ const SideBar = ({ userId }: { userId: string }) => {
                     <li>
                         <div className="flex items-center p-2 hover:bg-gray-100 rounded transition">
                             <Search className="mr-2" />
-                            <span>Search</span>
+                            <SearchComp />
                         </div>
                     </li>
                     <li>
