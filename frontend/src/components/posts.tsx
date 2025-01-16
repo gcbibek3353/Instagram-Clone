@@ -10,6 +10,15 @@ import {
     CarouselNext,
     CarouselPrevious,
 } from "@/components/ui/carousel"
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
+import { Link } from 'react-router-dom';
 
 
 const Posts = () => {
@@ -50,6 +59,7 @@ const Posts = () => {
 const Post = ({ id }: { id: any }) => {
     const [isBookmarked, setIsBookmarked] = useState(false);
     const [isLiked, setIsLiked] = useState(false);
+    const [isPostOpen, setIsPostOpen] = useState(false);
 
     const [post, setPost] = useState({
         author: { profilePic_Url: '', userName: '' },
@@ -61,6 +71,23 @@ const Post = ({ id }: { id: any }) => {
 
     const [comment, setComment] = useState('');
     const commentRef = useRef(null);
+    const [existingComments, setExistingComments] = useState([]);
+
+    useEffect(() => {
+        const fetchComments = async () => {
+            try {
+                const res = await axios.get(`http://localhost:3000/api/v1/post/getcomment/${id}`, { withCredentials: true });
+                if (!res.data || !res.data.success) {
+                    console.log(`failed to load comments`);
+                }
+                console.log(res.data.comments);
+                setExistingComments(res.data.comments);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        fetchComments();
+    }, []);
 
     useEffect(() => {
         const fetchPost = async () => {
@@ -154,7 +181,8 @@ const Post = ({ id }: { id: any }) => {
     return (
         <div className="border p-5  rounded-lg shadow-md bg-white">
             {/* Post Header */}
-            <div className="flex items-center mb-4">
+            <Link to={`/profile/${post.author?._id}`}
+                className="flex items-center mb-4">
                 {post.author?.profilePic_Url ? (
                     <img
                         src={post.author.profilePic_Url}
@@ -165,55 +193,114 @@ const Post = ({ id }: { id: any }) => {
                     <UserRound className="bg-gray-300 mr-3 p-2 rounded-full text-gray-600 w-10 h-10" />
                 )}
                 <h3 className="font-semibold text-gray-800">{post.author?.userName}</h3>
-            </div>
+            </Link>
 
-            {/* Post Content */}
-            <p className="text-gray-700 mb-4">{post?.caption}</p>
+            <Dialog>
+                <DialogTrigger className="block w-full">
+                    {/* Post Content */}
+                    <p className="text-gray-700 text-start mb-4">{post?.caption}</p>
 
-            {/* Post Images */}
-            {/* <div className="space-y-4">
-                {post?.images.length > 0 ? (
-                    post?.images.map((image, index) => (
-                        <div key={index}>
-                            <img
-                                src={image}
-                                alt="post image"
-                                className="w-full h-auto rounded-lg"
-                            />
-                        </div>
-                    ))
-                ) : (
-                    <p className="text-gray-500">No image</p>
-                )}
-            </div> */}
+                    <div className="flex justify-center">
+                        {post?.images.length > 0 ? (
+                            <Carousel className="w-1/2">
+                                <CarouselContent>
+                                    {post?.images.map((image, index) => (
+                                        <CarouselItem key={index}>
+                                            <img
+                                                src={image}
+                                                alt="post image"
+                                                className="h-auto rounded-lg object-cover"
+                                            />
+                                        </CarouselItem>
+                                    ))}
+                                </CarouselContent>
+                                {post?.images.length > 1 && (
+                                    <>
+                                        <CarouselPrevious className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full hover:bg-gray-700 transition duration-200" />
+                                        <CarouselNext className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full hover:bg-gray-700 transition duration-200" />
+                                    </>
+                                )}
+                            </Carousel>
+                        ) : (
+                            <p className="text-gray-500">No image</p>
+                        )}
+                    </div>
+                </DialogTrigger>
 
-            <div className='flex justify-center'>
-                {post?.images.length > 0 ?
-                    <Carousel className='w-1/2'>
-                        <CarouselContent>
-                            {(
-                                post?.images.map((image, index) => (
+                <DialogContent className="bg-white rounded-lg shadow-lg p-6 w-full max-w-4xl mx-auto">
+                    <DialogHeader>
+                        <DialogTitle className="text-lg font-bold text-gray-800 mb-4">
+                            {post?.caption}
+                        </DialogTitle>
+                        <DialogDescription>
+                            <div className="flex flex-col lg:flex-row gap-8">
+                                {/* Carousel Section */}
+                                <div className="flex justify-center w-full lg:w-1/2">
+                                    {post?.images.length > 0 ? (
+                                        <Carousel className="w-full">
+                                            <CarouselContent>
+                                                {post?.images.map((image, index) => (
+                                                    <CarouselItem key={index}>
+                                                        <img
+                                                            src={image}
+                                                            alt="post image"
+                                                            className="h-auto rounded-lg object-cover"
+                                                        />
+                                                    </CarouselItem>
+                                                ))}
+                                            </CarouselContent>
+                                            {post?.images.length > 1 && (
+                                                <>
+                                                    <CarouselPrevious className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full hover:bg-gray-700 transition duration-200" />
+                                                    <CarouselNext className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full hover:bg-gray-700 transition duration-200" />
+                                                </>
+                                            )}
+                                        </Carousel>
+                                    ) : (
+                                        <p className="text-gray-500">No image</p>
+                                    )}
+                                </div>
 
-                                    <CarouselItem key={index}>
-                                        <img
-                                            src={image}
-                                            alt="post image"
-                                            className=" h-auto rounded-lg"
-                                        />
-                                    </CarouselItem>
-                                ))
-                            )}
-                        </CarouselContent>
-                        {post?.images.length > 1 && <>
-                            <CarouselPrevious />
-                            <CarouselNext />
-                        </>}
+                                {/* Comments Section */}
+                                <div className="w-full lg:w-1/2">
+                                    <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                                        Comments
+                                    </h3>
+                                    {existingComments.length > 0 ? (
+                                        <div className="flex flex-col gap-4">
+                                            {existingComments.map((comment, index) => (
+                                                <div
+                                                    key={index}
+                                                    className="flex items-start gap-4 bg-gray-100 p-4 rounded-lg"
+                                                >
+                                                    {comment?.author?.profilePic_Url ? (
+                                                        <img
+                                                            src={comment?.author?.profilePic_Url}
+                                                            alt={`${comment?.author?.userName}'s profile`}
+                                                            className="h-10 w-10 rounded-full object-cover"
+                                                        />
+                                                    ) : (
+                                                        <UserRound className="bg-gray-300 p-1 rounded-full text-lg w-10 h-10" />
+                                                    )}
+                                                    <div>
+                                                        <p className="text-sm font-medium text-gray-800">
+                                                            {comment?.author?.userName}
+                                                        </p>
+                                                        <p className="text-sm text-gray-600">{comment?.text}</p>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <p className="text-gray-500">No comments yet.</p>
+                                    )}
+                                </div>
+                            </div>
+                        </DialogDescription>
+                    </DialogHeader>
+                </DialogContent>
+            
 
-                    </Carousel>
-                    : (
-                        <p className="text-gray-500">No image</p>
-                    )}
-            </div>
 
 
 
@@ -243,14 +330,18 @@ const Post = ({ id }: { id: any }) => {
                 <p>{post?.likes.length} Likes</p>
                 <p>
                     {post?.comments.length > 0 ? (
-                        <span className="cursor-pointer text-blue-600">
+                        <DialogTrigger>
+                        <span className="cursor-pointer hover:underline text-blue-600">
                             View all {post?.comments.length} comments
                         </span>
+                        </DialogTrigger>
                     ) : (
                         'No comments'
                     )}
                 </p>
             </div>
+
+            </Dialog>
 
             {/* Comment Input */}
             <div className="mt-3 flex flex-col lg:flex-row items-center gap-2">

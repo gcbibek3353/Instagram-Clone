@@ -156,7 +156,7 @@ export const addComment = async (req, res) => {
 export const getCommentsOfPost = async (req, res) => {
     try {
         const postId = req.params.id;
-        const comments = await CommentModel.find({ post: postId }).populate('author', 'username profilePicture');
+        const comments = await CommentModel.find({ post: postId }).populate('author', 'profilePic_Url userName');
         if (!comments)
             return res.status(404).json({ message: 'No comments found for this post', success: false });
         return res.status(200).json({ success: true, comments });
