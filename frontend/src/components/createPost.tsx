@@ -39,6 +39,10 @@ const createPost = () => {
 
   const postCreateHandler = async (e : React.FormEvent) => {
     e.preventDefault();
+    if(caption.trim() === ''){
+      return toast.error('Caption is required');
+    }
+
     const formData = new FormData();
     formData.append("caption", caption);
     if(imagePreviews) files.forEach((file) => {

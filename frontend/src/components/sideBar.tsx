@@ -48,24 +48,24 @@ const SideBar = ({ userId }: { userId: string }) => {
                             <SearchComp />
                         </div>
                     </li>
-                    <li>
+                    {/* <li>
                         <div className="flex items-center p-2 hover:bg-gray-100 rounded transition">
                             <TrendingUp className="mr-2" />
                             <span>Explore</span>
                         </div>
-                    </li>
-                    <li>
+                    </li> */}
+                    {/* <li>
                         <NavLink className={navLinkStyles} to={`/message/${userId}`} >
                             <MessageCircle className="mr-2" />
                             <span>Message</span>
                         </NavLink>
-                    </li>
-                    <li>
+                    </li> */}
+                    {/* <li>
                         <div className="flex items-center p-2 hover:bg-gray-100 rounded transition">
                             <Heart className="mr-2" />
                             <span>Notifications</span>
                         </div>
-                    </li>
+                    </li> */}
                     <li>
                         <NavLink className={navLinkStyles} to={`/createPost/${userId}`} >
                             <PlusSquare className="mr-2" />
