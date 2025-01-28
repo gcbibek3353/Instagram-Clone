@@ -24,17 +24,21 @@ const userInfo = ({ userId }: { userId: string }) => {
 
   return (
     <div className='p-2 m-3'>
-      {profile?.user?.userName ? (
+      {//@ts-ignore
+      profile?.user?.userName ? (
         <Link to={`/profile/${userId}`}  className='flex gap-2'>
-          {
+          {//@ts-ignore
             profile.user.profilePic_Url ?
-             <img src={profile.user.profilePic_Url} alt={"user_Pic"} className='w-10 h-10 rounded-full' />
+             <img src={//@ts-ignore
+              profile.user.profilePic_Url} alt={"user_Pic"} className='w-10 h-10 rounded-full' />
              :  <UserRound className='bg-slate-300 mr-2 p-2 rounded-full text-lg w-10 h-10' />
           }
           
           <div>
-            <p>{profile.user.userName}</p>
-            <p>{profile.user.bio}</p>
+            <p>{//@ts-ignore
+            profile.user.userName}</p>
+            <p>{//@ts-ignore
+            profile.user.bio}</p>
           </div>
         </Link >
       ) : (

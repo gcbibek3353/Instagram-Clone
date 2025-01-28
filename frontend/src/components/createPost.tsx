@@ -29,10 +29,12 @@ const createPost = () => {
       console.log('No file selected');
     }
     else{
+      //@ts-ignore
       setFiles(fileArray);
       const dataUrls = await Promise.all(
         fileArray.map((file: any) => readFileAsDataURL(file))
       );
+      //@ts-ignore
       setImagePreviews(dataUrls);
     }
   }
@@ -73,6 +75,7 @@ const createPost = () => {
 
   const handleButtonClick = ()=>{
     if(imgRef.current){
+      //@ts-ignore
       imgRef.current.click();
     }
   }
@@ -141,6 +144,7 @@ const createPost = () => {
       <input
         type="file"
         name="postImage"
+        //@ts-ignore
         ref={imgRef}
         className="hidden"
         onChange={fileChangeHandler}

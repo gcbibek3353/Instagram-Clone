@@ -59,7 +59,6 @@ const Posts = () => {
 const Post = ({ id }: { id: any }) => {
     const [isBookmarked, setIsBookmarked] = useState(false);
     const [isLiked, setIsLiked] = useState(false);
-    const [isPostOpen, setIsPostOpen] = useState(false);
 
     const [post, setPost] = useState({
         author: { profilePic_Url: '', userName: '' },
@@ -121,13 +120,13 @@ const Post = ({ id }: { id: any }) => {
         }
     }
     const commentHandler = () => {
-        if (commentRef) {
-            commentRef.current.focus();
+        if (!commentRef) {
+            console.log('no comment ref');
             // console.log(commentRef.current);
         }
         else {
-            console.log('no comment ref');
-
+            //@ts-ignore
+            commentRef?.current.focus();
         }
     }
 
@@ -181,7 +180,10 @@ const Post = ({ id }: { id: any }) => {
     return (
         <div className="border p-5  rounded-lg shadow-md bg-white">
             {/* Post Header */}
-            <Link to={`/profile/${post.author?._id}`}
+            
+            <Link to={`/profile/${ //@ts-ignore
+                post.author?._id}`
+            }
                 className="flex items-center mb-4">
                 {post.author?.profilePic_Url ? (
                     <img
@@ -273,10 +275,13 @@ const Post = ({ id }: { id: any }) => {
                                                     key={index}
                                                     className="flex items-start gap-4 bg-gray-100 p-4 rounded-lg"
                                                 >
-                                                    {comment?.author?.profilePic_Url ? (
+                                                    {//@ts-ignore
+                                                    comment?.author?.profilePic_Url ? (
                                                         <img
-                                                            src={comment?.author?.profilePic_Url}
-                                                            alt={`${comment?.author?.userName}'s profile`}
+                                                            src={//@ts-ignore
+                                                                comment?.author?.profilePic_Url}
+                                                            alt={`${//@ts-ignore
+                                                                comment?.author?.userName}'s profile`}
                                                             className="h-10 w-10 rounded-full object-cover"
                                                         />
                                                     ) : (
@@ -284,9 +289,11 @@ const Post = ({ id }: { id: any }) => {
                                                     )}
                                                     <div>
                                                         <p className="text-sm font-medium text-gray-800">
-                                                            {comment?.author?.userName}
+                                                            {//@ts-ignore
+                                                            comment?.author?.userName}
                                                         </p>
-                                                        <p className="text-sm text-gray-600">{comment?.text}</p>
+                                                        <p className="text-sm text-gray-600">{//@ts-ignore
+                                                        comment?.text}</p>
                                                     </div>
                                                 </div>
                                             ))}

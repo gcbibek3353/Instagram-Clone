@@ -1,11 +1,11 @@
 import {
     Dialog,
     DialogContent,
-    DialogDescription,
     DialogHeader,
     DialogTitle,
     DialogTrigger,
   } from "@/components/ui/dialog"
+import { User } from "@/lib/types";
 import axios from "axios";
 import { UserRound } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -15,10 +15,10 @@ import { toast } from "sonner";
 
 const SearchComp = () => {
     const [open,setOpen] = useState(false);
-    const [users,setUsers] = useState([]);
+    const [users,setUsers] = useState<User[]>([]);
     
     const [searchVal,setSearchVal] = useState("");
-    const [searchResults, setSearchResults] = useState([]);
+    const [searchResults, setSearchResults] = useState<User[]>([]);
     const [isSearching, setIsSearching] = useState(false);
 
     const getAllUsers = async () => {
@@ -39,7 +39,7 @@ const SearchComp = () => {
     useEffect(() => {
       if (searchVal.length > 0) {
           setIsSearching(true);
-          const results = users.filter((user) =>
+          const results = users.filter((user : User) =>
               user?.userName.toLowerCase().includes(searchVal.toLowerCase())
           );
           setSearchResults(results.slice(0, 5));

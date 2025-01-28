@@ -265,7 +265,7 @@ export const followORUnfollow = async (req, res) => {
 export const getAllUsers = async (req, res) => {
     try {
         const users = await UserModel.find().select('-password');
-        // console.log(users);
+        console.log(users);
         return res.status(201).json({
             message: "All Users",
             success: true,

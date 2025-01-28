@@ -1,6 +1,6 @@
 import { userAtom } from '@/recoil/user';
 import axios from 'axios';
-import { Heart, Home, LogOut, MessageCircle, PlusSquare, Search, TrendingUp, UserRound } from 'lucide-react';
+import { Home, LogOut, MessageCircle, PlusSquare, Search, UserRound } from 'lucide-react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import { toast } from 'sonner';
@@ -24,7 +24,8 @@ const SideBar = ({ userId }: { userId: string }) => {
 
     }
 
-    const navLinkStyles = ({ isActive }) =>
+    const navLinkStyles = ({ isActive } : {isActive : unknown}) =>
+        //@ts-ignore
         isActive
             ? "flex items-center p-2 bg-gray-100 rounded transition"
             : "flex items-center p-2 hover:bg-gray-100 rounded transition";

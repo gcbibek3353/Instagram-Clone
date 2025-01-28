@@ -11,7 +11,7 @@ const getUserProfile = (userId : string) =>{
                 // add res.data.user in reciol atom
             }
         }
-
+        fetchUser();
     },[userId]);
 
 }
